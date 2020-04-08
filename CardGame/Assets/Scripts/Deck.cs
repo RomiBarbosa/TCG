@@ -10,16 +10,6 @@ public class Deck : MonoBehaviour
     void Start()
     {
         Shuffle();
-        InitializeDeck();
-      
-
-    }
-    private void Update()
-    {
-
-    }
-    public void InitializeDeck()
-    {
     }
 
     public Card Discard(int index)
@@ -43,9 +33,11 @@ public class Deck : MonoBehaviour
 
     public Card GiveMeACard()
     {
-        Card c = Discard(deck.Count - 1);
-        cp.cardInfo = c;
-        cp.UpdateData();
+        //Card c = Discard(deck.Count - 1);
+        //cp.cardInfo = c;
+        //cp.UpdateData();
+        //return c; //the last card
+        Card c = Discard(Random.Range(0,deck.Count));
         return c;
     }
 

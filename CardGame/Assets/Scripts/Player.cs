@@ -67,7 +67,7 @@ public class Player : MonoBehaviour
     {
         var card = cardPlayer.cardInfo;
         DiscardFromHand(cardPlayer);
-        boardPlayer.AddCard(card);
+        boardPlayer.AddCard(card, this);
     }
 
     public bool BuyCard(StoreCard cardPlayer)
@@ -112,10 +112,16 @@ public class Player : MonoBehaviour
         }
     }
 
-    //public bool IncreaseXP()
-    //{
-    //    xp++;
-    //}
+    public void BuyXP()
+    {
+        if (level<3 && coins>=1)
+        {
+            xp++;
+            ManageLevel();
+            coins--;
+        }
+        
+    }
 
     public void DiscardFromHand(CardPlayer card)
     {
@@ -135,11 +141,7 @@ public class Player : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0))
             {
-
-                // Board.boardIns.AddCardToBoard();
             }
-            //me pueddo mover
-
         }
     }
 
@@ -152,5 +154,17 @@ public class Player : MonoBehaviour
         go.GetComponent<CardPlayer>().myPlayer = this;
         indexHand++;
         return go;
+    }
+
+    public void ManageLevel()
+    {
+        if (xp >= 10 && xp < 20)
+        {
+            level = 2;
+        }
+        if (xp >= 20)
+        {
+            level = 3;
+        }
     }
 }

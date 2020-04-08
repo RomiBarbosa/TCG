@@ -18,6 +18,7 @@ public class Manager : MonoBehaviour
         ChangeTurn();
         PlayTurn();
     }
+
     void ChangeTurn()
     {
         if (turn < (players.Length - 1))
@@ -25,13 +26,12 @@ public class Manager : MonoBehaviour
             turn++;
         }
         else { turn = 0; }
-        //mod
-
     }
+
     void PlayTurn()
     {
         players[turn].PlayerTurn();
-        
+        StartCoroutine(Timer());
     }
 
 
@@ -43,12 +43,18 @@ public class Manager : MonoBehaviour
 
     IEnumerator Timer()
     {
+        Debug.Log("esperando");
         yield return new WaitForSeconds(10f);
+
+        Debug.Log("listo");
+        StopCoroutine(Timer());
+        StartCoroutine(StartCombat());
     }
 
 
     IEnumerator StartCombat()
     {
+        Debug.Log("Combat");
         while (true)
         {
             yield return new WaitForSeconds(1f);
@@ -60,7 +66,7 @@ public class Manager : MonoBehaviour
 
             }
 
-            if (CheckWinners()) // (players[0].boardPlayer.units.Count == 0 || players[1].boardPlayer.units.Count == 0)
+            if (CheckWinners())
             {
                 Debug.Log("Won! team ");
                 TeamWinner();
@@ -77,32 +83,21 @@ public class Manager : MonoBehaviour
 
     public bool CheckWinners()
     {
-        return players.Any((board) => board.boardPlayer.units.Count == 0); //return false;
+        return players.Any((board) => board.boardPlayer.units.Count == 0);
     }
 
     public int TeamWinner()
     {
         int result = 0;
-        //for (int i = 0; i < players.Length; i++)
-        //{
-        //    if (players[i].boardPlayer.units.Count != 0)
-        //    {
-        //        result = players[i].boardPlayer.units.Sum((r) => r.damage);
-        //        Debug.Log("Team " + i + "! damage to hero:" + result);
-        //        PlayerTakeDamage(i,result);
-        //    }
-        //}
         if (players[0].boardPlayer.units.Count == 0)
         {
             result = players[1].boardPlayer.units.Sum((r) => r.damage);
-            // PlayerTakeDamage(1, result);
             Debug.Log("Team 1! damage to hero:" + result);
             PlayerTakeDamage(0, result);
         }
         else
         {
             result = players[0].boardPlayer.units.Sum((r) => r.damage);
-            //PlayerTakeDamage(0, result);
             Debug.Log("Team 0! damage to hero:" + result);
             PlayerTakeDamage(1, result);
         }

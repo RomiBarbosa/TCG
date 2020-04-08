@@ -12,6 +12,8 @@ public class Unit : MonoBehaviour
     public Text hpText;
     public Text attackText;
     public string title;
+    public Card cardInfo;
+    public Player myPlayer;
     //public Image imageSprite;
 
     private void Start()
@@ -36,5 +38,11 @@ public class Unit : MonoBehaviour
      void Destroy()
     {
         Destroy(this.gameObject, 0.1f);
+    }
+
+    public void SellCard()
+    {
+        myPlayer.store.SellCards(cardInfo);
+        Destroy();
     }
 }

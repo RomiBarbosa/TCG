@@ -17,25 +17,32 @@ public class Store : MonoBehaviour
 
     private void Start()
     {
+        Initialize();
+    }
+
+    public void Initialize()
+    {
         player = gameObject.GetComponent<Player>();
+
         store.Clear();
+
         for (int i = 0; i < 3; i++)
         {
-            var card = deck.GiveMeACard();
-            store.Add(card);
+            GetCardsFromDeck();
         }
         for (int i = 0; i < 3; i++)
         {
-            storeUI.Add(DrawCards());
+            storeUI.Add(DrawCards()); //create the cards
         }
         UpdateDataCards();
     }
+
     public void Refresh()
     {
-        
+        deck.Shuffle();
         if (!isLock && player.CanRefresh())
         {
-            ChangeCards();
+            ReloadCards();
             UpdateDataCards();
         }
       
@@ -56,24 +63,39 @@ public class Store : MonoBehaviour
 
     }
 
-    public void ChangeCards()
+    public void GetCardsFromDeck()
     {
-        //for (int i = 0; i < maxCards; i++)
-        //{
-        //    if (storeUI[i].activeSelf == true)
-        //    {
-        //        deck.AddCardToDeck(storeUI[i].GetComponent<StoreCard>().cardInfo);
-        //        Debug.Log("agrego carta");
-        //    }
-            
-        //}
+        var card = deck.GiveMeACard();
+        if (FilterCardByLevel(card))
+        {
+            store.Add(card);
+        }
+        else
+        {
+            GetCardsFromDeck();
+            deck.AddCardToDeck(card);
+        }
+
+    }
+
+    public void ReloadCards()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            if (storeUI[i].activeSelf == true)
+            {
+                deck.AddCardToDeck(storeUI[i].GetComponent<StoreCard>().cardInfo);
+            }
+
+        }
         store.Clear();
         for (int i = 0; i < 3; i++)
         {
-            var card = deck.GiveMeACard();
-            store.Add(card);
+            GetCardsFromDeck();
         }
     }
+
+
 
     public void UpdateDataCards()
     {
@@ -93,24 +115,26 @@ public class Store : MonoBehaviour
         return go;
     }
 
-
-    public GameObject CreateCardUI(Card card)
+    public void SellCards(Card card)
     {
-        GameObject go = Instantiate(CardUI, new Vector3(0, 0, 0), Quaternion.identity);
-        go.transform.SetParent(Panel.transform);
-        go.GetComponent<StoreCard>().cardInfo = card;
-        go.GetComponent<StoreCard>().myPlayer = player;
-        return go;
+        deck.AddCardToDeck(card);
+        player.coins++;
     }
 
-    public void SellCards(GameObject card)
+    public bool FilterCardByLevel(Card card)
     {
-        //comprar nivel jugador
-        //vender cartas
-        //devolver al deck principal las cartas
-        //deck deberia ser estatico
-        //al recibir una carta devolverla al deck principal
-        //y dar una moneda al jugador
-        //tenes que usar la carta para poder venderla
+        if (card.level <=player.level)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public void BuyXP()
+    {
+        player.BuyXP();
     }
 }
