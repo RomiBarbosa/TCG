@@ -8,8 +8,11 @@ public class Player : MonoBehaviour
 {
     public int health;
     public string namePlayer;
-   public Deck myDeck;
-    public int coins;
+    //public Deck myDeck;
+    public Store store;
+    public int coins = 5;
+    public int level = 0;
+    public int xp = 0;
     public const int maxCoins = 5;
     public bool isMyPlayer;
     public bool myTurn;
@@ -18,6 +21,7 @@ public class Player : MonoBehaviour
     public GameObject Panel;
 
     public List<GameObject> handCards = new List<GameObject>();
+    public List<Card> hand = new List<Card>();
 
     int indexHand;
 
@@ -41,23 +45,17 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        myDeck = gameObject.GetComponent<Deck>();
         health = 45;
     }
 
-    public void AddCardToHand()
+    public void AddCardToHand(Card cardPlayer)
     {
-        if (myDeck.HaveCardsInDeck()/* && maxCards< handCards.Count*/)
-        {
-            var card = myDeck.GiveMeACard();
-            handCards.Add(CreateCardUI(card));
-        }
+        handCards.Add(CreateCardUI(cardPlayer));
     }
 
     public void PlayerTurn()
     {
         myTurn = true;
-        AddCardToHand();
         if (coins < maxCoins)
         {
             coins++;
@@ -67,15 +65,24 @@ public class Player : MonoBehaviour
 
     public void PlayCard(CardPlayer cardPlayer)
     {
+        var card = cardPlayer.cardInfo;
+        DiscardFromHand(cardPlayer);
+        boardPlayer.AddCard(card);
+    }
 
+    public bool BuyCard(StoreCard cardPlayer)
+    {
+        bool buy = false;
         var card = cardPlayer.cardInfo;
         if (CanBuy(card.cost))
         {
             SubstractionCoins(card.cost);
-            DiscardFromHand(cardPlayer);
-            boardPlayer.AddCard(card);
-           // board.AddCardToBoard(card);
+            hand.Add(card);
+            AddCardToHand(card);
+            Debug.Log("compro carta");
+            buy = true;
         }
+        return buy;
     }
 
     public bool CanBuy(int cardcost)
@@ -91,6 +98,24 @@ public class Player : MonoBehaviour
     {
         coins -= cardcost;
     }
+
+    public bool CanRefresh()
+    {
+        if (coins >= 1)
+        {
+            coins--;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    //public bool IncreaseXP()
+    //{
+    //    xp++;
+    //}
 
     public void DiscardFromHand(CardPlayer card)
     {

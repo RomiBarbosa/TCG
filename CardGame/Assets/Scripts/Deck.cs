@@ -49,5 +49,8 @@ public class Deck : MonoBehaviour
         return c;
     }
 
-
+    public void AddCardToDeck(Card card)
+    {
+        deck.Add(card);
+    }
 }

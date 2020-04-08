@@ -10,6 +10,7 @@ public class Manager : MonoBehaviour
     public int turn;
     StateGame actualState;
     public BattleSystem battle;
+    public float timerTactics = 30;
 
     public void EndTurn()
     {
@@ -38,6 +39,11 @@ public class Manager : MonoBehaviour
     {
         actualState = StateGame.COMBAT;
         StartCoroutine(StartCombat());
+    }
+
+    IEnumerator Timer()
+    {
+        yield return new WaitForSeconds(10f);
     }
 
 
@@ -114,8 +120,8 @@ public class Manager : MonoBehaviour
     void Start()
     {
         actualState = StateGame.PLAYERSTURNS;
-        turn = Random.Range(0, 2);
-        PlayTurn();
+       // turn = Random.Range(0, 2);
+       // PlayTurn();
     }
 
 

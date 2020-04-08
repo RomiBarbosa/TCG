@@ -14,4 +14,8 @@ public class Card : ScriptableObject /*: MonoBehaviour */
     public string description;
     public int attackPower;
     public int heal;
+    public int level;
+    public string type;
+    public bool shield;
+    public bool armor;
 }
